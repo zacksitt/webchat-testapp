@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, Form, Container, ListGroup } from 'react-bootstrap';
+import Avatar from 'react-avatar';
 
 const Chat = () => {
   const messages = useSelector((state) => state.messages);
@@ -11,13 +12,10 @@ const Chat = () => {
   const chatEndRef = useRef(null);
 
   useEffect(() => {
-    
     const interval = setInterval(() => {
       // Force update to sync between tabs
-      console.log("Sync message");
       dispatch({ type: 'SYNC_MESSAGES' });
     }, 1000);
-
     return () => clearInterval(interval);
   }, [dispatch]);
 
@@ -39,6 +37,7 @@ const Chat = () => {
             key={index}
             className={`d-flex ${msg.username === username ? 'justify-content-end' : 'justify-content-start'}`}
           >
+            <Avatar name={msg.username} size="40" round={true} className="me-2" />
             <div className={`p-2 ${msg.username === username ? 'bg-primary text-white' : 'bg-light'}`} style={{ borderRadius: '10px', maxWidth: '60%' }}>
               <strong>{msg.username}:</strong> {msg.message}
               <div className="text-muted small">{new Date(msg.timestamp).toLocaleTimeString()}</div>

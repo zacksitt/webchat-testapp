@@ -18,6 +18,12 @@ const initialState = {
           ...state,
           username: action.payload,
         };
+      case 'SYNC_MESSAGES':
+          const syncedMessages = JSON.parse(localStorage.getItem('messages')) || [];
+          return {
+            ...state,
+            messages: syncedMessages,
+          };  
       case 'LOAD_MORE_MESSAGES':
         return {
           ...state,

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Container, ListGroup, ListGroupItem, Form, Button } from 'react-bootstrap';
+import { Button, Form, Container, ListGroup } from 'react-bootstrap';
 
 const Chat = () => {
   const messages = useSelector((state) => state.messages);
@@ -11,19 +11,20 @@ const Chat = () => {
   const chatEndRef = useRef(null);
 
   useEffect(() => {
+    
     const interval = setInterval(() => {
       // Force update to sync between tabs
+      console.log("Sync message");
       dispatch({ type: 'SYNC_MESSAGES' });
     }, 1000);
+
     return () => clearInterval(interval);
   }, [dispatch]);
 
   const handleSend = () => {
-    if (message.trim() !== '') {
-      dispatch({ type: 'ADD_MESSAGE', payload: { username, message, timestamp: new Date() } });
-      setMessage('');
-      chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
+    dispatch({ type: 'ADD_MESSAGE', payload: { username, message, timestamp: new Date() } });
+    setMessage('');
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const loadMoreMessages = () => {
@@ -31,30 +32,34 @@ const Chat = () => {
   };
 
   return (
-    <Container>
+    <Container className="mt-5">
       <ListGroup>
         {messages.slice(-page * 25).map((msg, index) => (
-          <ListGroupItem key={index}>
-            <strong>{msg.username}:</strong> {msg.message} <br />
-            <small className="text-muted">{new Date(msg.timestamp).toLocaleTimeString()}</small>
-          </ListGroupItem>
+          <ListGroup.Item
+            key={index}
+            className={`d-flex ${msg.username === username ? 'justify-content-end' : 'justify-content-start'}`}
+          >
+            <div className={`p-2 ${msg.username === username ? 'bg-primary text-white' : 'bg-light'}`} style={{ borderRadius: '10px', maxWidth: '60%' }}>
+              <strong>{msg.username}:</strong> {msg.message}
+              <div className="text-muted small">{new Date(msg.timestamp).toLocaleTimeString()}</div>
+            </div>
+          </ListGroup.Item>
         ))}
         <div ref={chatEndRef} />
       </ListGroup>
-      {page * 25 < messages.length && (
-        <Button variant="link" onClick={loadMoreMessages}>
-          Load More
-        </Button>
-      )}
-      <Form.Group className="mt-3">
+      <div className="d-flex justify-content-center my-3">
+        <Button onClick={loadMoreMessages}>Load More</Button>
+      </div>
+      <Form className="d-flex">
         <Form.Control
           type="text"
           placeholder="Type a message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          className="me-2"
         />
-      </Form.Group>
-      <Button onClick={handleSend} className="mt-2">Send</Button>
+        <Button onClick={handleSend}>Send</Button>
+      </Form>
     </Container>
   );
 };

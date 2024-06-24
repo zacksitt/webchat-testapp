@@ -12,7 +12,12 @@ const UsernamePrompt = () => {
       dispatch({ type: 'SET_USERNAME', payload: username });
     }
   };
-
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { // Check if Enter key was pressed without Shift
+      e.preventDefault(); // Prevent default behavior (form submission)
+      handleSubmit(); // Call handleSend function to submit message
+    }
+  };
   return (
     <Container className="mt-5">
       <Form>
@@ -22,6 +27,7 @@ const UsernamePrompt = () => {
             type="text"
             placeholder="Enter your name"
             value={username}
+            onKeyDown={handleKeyPress}
             onChange={(e) => setUsername(e.target.value)}
           />
         </Form.Group>

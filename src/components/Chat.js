@@ -28,7 +28,12 @@ const Chat = () => {
   const loadMoreMessages = () => {
     dispatch({ type: 'LOAD_MORE_MESSAGES' });
   };
-
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { // Check if Enter key was pressed without Shift
+      e.preventDefault(); // Prevent default behavior (form submission)
+      handleSend(); // Call handleSend function to submit message
+    }
+  };
   return (
     <Container className="mt-5">
       <ListGroup>
@@ -56,8 +61,10 @@ const Chat = () => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           className="me-2"
+          onKeyDown={handleKeyPress}
+          style={{ flex: '1', borderRadius: '20px 0 0 20px', backgroundColor: '#f2f2f2' }} // Adjust input box style
         />
-        <Button onClick={handleSend}>Send</Button>
+        <Button onClick={handleSend} variant="primary" style={{ borderRadius: '0 20px 20px 0' }}>Send</Button> {/* Adjust send button style */}
       </Form>
     </Container>
   );
